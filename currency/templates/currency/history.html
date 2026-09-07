@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>История</title>
+    <title>История конвертаций</title>
     <style>
         body { font-family: Arial; background: #f0f2f5; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -32,15 +32,24 @@
             <a href="/users/profile/">Профиль</a>
             <a href="/users/logout/">Выйти</a>
         </div>
+
         <h1>История конвертаций</h1>
+
         <form method="GET" class="filter-form">
             <input type="text" name="currency" placeholder="Фильтр по валюте" value="{{ currency_filter }}">
             <button type="submit">Найти</button>
         </form>
+
         {% if page_obj %}
             <table>
                 <thead>
-                    <tr><th>Дата</th><th>Сумма</th><th>Из</th><th>В</th><th>Результат</th></tr>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Сумма</th>
+                        <th>Из</th>
+                        <th>В</th>
+                        <th>Результат</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% for item in page_obj %}
@@ -54,12 +63,15 @@
                     {% endfor %}
                 </tbody>
             </table>
+
             <div class="pagination">
                 {% if page_obj.has_previous %}
                     <a href="?page=1">Первая</a>
                     <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
                 {% endif %}
+
                 <span class="current">{{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
                 {% if page_obj.has_next %}
                     <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
                     <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
