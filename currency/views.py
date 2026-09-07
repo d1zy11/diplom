@@ -1,3 +1,4 @@
+from news.models import News
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -12,7 +13,10 @@ logger = logging.getLogger(__name__)
 def index(request):
     rates = CurrencyService.get_rates()
     currencies = sorted(rates.keys())
-    context = {'currencies': currencies}
+    context = {
+    'currencies': currencies,
+    'latest_news': News.objects.filter(is_published=True).order_by('-created_at')[:3],
+}
 
     if request.method == 'POST':
         amount = request.POST.get('amount')
