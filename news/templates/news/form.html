@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% if form.instance.pk %}Редактирование{% else %}Создание{% endif %} новости</title>
+    <style>
+        body { font-family: Arial; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .nav { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav a { color: #4a6cf7; text-decoration: none; }
+        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        textarea { min-height: 150px; }
+        .btn { padding: 12px 30px; background: #4a6cf7; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        .btn:hover { background: #3a56d4; }
+        .actions { display: flex; gap: 15px; margin-top: 10px; }
+        .btn-cancel { background: #e2e8f0; color: #2d3748; text-decoration: none; padding: 12px 30px; border-radius: 8px; }
+        .btn-cancel:hover { background: #cbd5e0; }
+        .errorlist { color: #721c24; list-style: none; padding: 0; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">Конвертер</a>
+            <a href="/news/">Новости</a>
+            {% if user.is_authenticated %}
+                <a href="/users/profile/">Профиль</a>
+                <a href="/users/logout/">Выйти</a>
+            {% endif %}
+        </div>
+        <div class="card">
+            <h1>{% if form.instance.pk %}Редактирование{% else %}Создание{% endif %} новости</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="actions">
+                    <button type="submit" class="btn">Сохранить</button>
+                    <a href="{% url 'news:list' %}" class="btn-cancel">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

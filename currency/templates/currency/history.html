@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>История</title>
+    <style>
+        body { font-family: Arial; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2d3748; }
+        .nav { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav a { color: #4a6cf7; text-decoration: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: #f7fafc; padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+        tr:hover { background: #f7fafc; }
+        .empty { text-align: center; padding: 40px 0; color: #888; }
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .pagination a { padding: 8px 16px; background: #e2e8f0; color: #2d3748; text-decoration: none; border-radius: 8px; }
+        .pagination .current { padding: 8px 16px; background: #4a6cf7; color: white; border-radius: 8px; }
+        .filter-form { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .filter-form input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; }
+        .filter-form button { padding: 8px 20px; background: #4a6cf7; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">Конвертер</a>
+            <a href="/news/">Новости</a>
+            <a href="/history/">История</a>
+            <a href="/favorites/">Избранное</a>
+            <a href="/users/profile/">Профиль</a>
+            <a href="/users/logout/">Выйти</a>
+        </div>
+        <h1>История конвертаций</h1>
+        <form method="GET" class="filter-form">
+            <input type="text" name="currency" placeholder="Фильтр по валюте" value="{{ currency_filter }}">
+            <button type="submit">Найти</button>
+        </form>
+        {% if page_obj %}
+            <table>
+                <thead>
+                    <tr><th>Дата</th><th>Сумма</th><th>Из</th><th>В</th><th>Результат</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in page_obj %}
+                        <tr>
+                            <td>{{ item.created_at|date:"d.m.Y H:i" }}</td>
+                            <td>{{ item.amount }}</td>
+                            <td>{{ item.from_currency }}</td>
+                            <td>{{ item.to_currency }}</td>
+                            <td><strong>{{ item.result }}</strong></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">Первая</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+                {% endif %}
+                <span class="current">{{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="empty">У вас пока нет конвертаций</div>
+        {% endif %}
+    </div>
+</body>
+</html>

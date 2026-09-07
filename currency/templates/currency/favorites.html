@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Избранное</title>
+    <style>
+        body { font-family: Arial; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2d3748; }
+        .nav { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav a { color: #4a6cf7; text-decoration: none; }
+        .pair-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; align-items: center; }
+        .pair-item .pair { font-size: 18px; font-weight: 500; }
+        .btn-delete { color: #c0392b; text-decoration: none; font-size: 14px; }
+        .btn-delete:hover { text-decoration: underline; }
+        .form-add { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .form-add select { padding: 10px; border: 1px solid #ddd; border-radius: 8px; flex: 1; }
+        .form-add button { padding: 10px 20px; background: #4a6cf7; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .form-add button:hover { background: #3a56d4; }
+        .empty { text-align: center; padding: 40px 0; color: #888; }
+        .message { padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+        .message.success { background: #d4edda; color: #155724; }
+        .message.error { background: #f8d7da; color: #721c24; }
+        .message.info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">Конвертер</a>
+            <a href="/news/">Новости</a>
+            <a href="/history/">История</a>
+            <a href="/favorites/">Избранное</a>
+            <a href="/users/profile/">Профиль</a>
+            <a href="/users/logout/">Выйти</a>
+        </div>
+        <h1>Избранные пары</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <form method="POST" class="form-add">
+            {% csrf_token %}
+            <select name="from_currency" required>
+                <option value="">Из</option>
+                {% for curr in currencies %}
+                    <option value="{{ curr }}">{{ curr }}</option>
+                {% endfor %}
+            </select>
+            <select name="to_currency" required>
+                <option value="">В</option>
+                {% for curr in currencies %}
+                    <option value="{{ curr }}">{{ curr }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Добавить</button>
+        </form>
+        {% if favorite_pairs %}
+            {% for pair in favorite_pairs %}
+                <div class="pair-item">
+                    <span class="pair">{{ pair.from_currency }} -> {{ pair.to_currency }}</span>
+                    <a href="{% url 'currency:delete_favorite' pair.id %}" class="btn-delete">Удалить</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">У вас пока нет избранных пар</div>
+        {% endif %}
+    </div>
+</body>
+</html>
