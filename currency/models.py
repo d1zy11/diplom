@@ -16,6 +16,7 @@ class CurrencyRate(models.Model):
         ordering = ['code']
 
 
+# Модель для хранения истории конвертаций
 class ConversionHistory(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='conversions')
     from_currency = models.CharField('Из валюты', max_length=10)
@@ -33,6 +34,7 @@ class ConversionHistory(models.Model):
         ordering = ['-created_at']
 
 
+# Модель для хранения избранных пар валют
 class FavoritePair(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorite_pairs')
     from_currency = models.CharField('Из валюты', max_length=10)
@@ -45,4 +47,4 @@ class FavoritePair(models.Model):
     class Meta:
         verbose_name = 'Избранная пара'
         verbose_name_plural = 'Избранные пары'
-        unique_together = ['user', 'from_currency', 'to_currency']
+        unique_together = ['user', 'from_currency', 'to_currency'] # Нельзя добавить одну и ту же пару дважды
